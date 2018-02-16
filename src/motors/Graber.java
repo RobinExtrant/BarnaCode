@@ -97,15 +97,6 @@ public class Graber extends TimedMotor {
 	}
 
 	@Override
-	public void runFor(int millis, boolean forward) {
-		if(forward){
-			open();
-		}else{
-			close();
-		}
-	}
-
-	@Override
 	public boolean isTimeRunElapsed() {
 		if(this.attendeeDate != -1){
 			return System.currentTimeMillis() > this.attendeeDate;

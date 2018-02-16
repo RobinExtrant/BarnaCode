@@ -179,8 +179,6 @@ public class Propulsion extends TimedMotor implements MoveListener{
 		}
 	}
 	
-
-	@Override
 	public void runFor(int millis, boolean forward) {
 		lastAskRunning = new Date().getTime();
 		time           = millis;

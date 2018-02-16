@@ -27,12 +27,7 @@ public abstract class TimedMotor {
 	 * @param forward vrai si en avant
 	 */
 	public abstract void run(boolean forward);
-	/**
-	 * lance le robot pour X millisenconde
-	 * @param millis temps de trajet
-	 * @param forward vrai en avant
-	 */
-	public abstract void runFor(int millis, boolean forward);
+
 	/**
 	 * 
 	 * @return vrai si le temps de voyage est terminé
