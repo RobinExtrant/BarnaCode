@@ -16,6 +16,7 @@ public class Graber extends TimedMotor {
 	private long attendeeDate;
 
 	public Graber(){
+		this.isRuning = false;
 		this.port   = LocalEV3.get().getPort(BarnaConstants.PINCH);
 		this.graber = new EV3LargeRegulatedMotor(port);
 	}

@@ -39,13 +39,14 @@ public class Controler {
 	
 	public void start() throws FileNotFoundException, ClassNotFoundException, IOException {
 		boolean loaded = loadCalibration();
+		//boolean loaded = false;
 		boolean nocalibrate = false;
 		if (loaded) {
 			screen.drawText("Calibration", 
 				"Appuyez sur echap ","pour skipper");
 			nocalibrate = input.waitButton(Button.ID_ESCAPE);
 		}
-		if(nocalibrate){
+		if(!nocalibrate){
 			calibrate();
 			saveCalibration();
 		}
@@ -54,7 +55,22 @@ public class Controler {
 	}
 	
 	private void mainLoop() {
-		// TODO Auto-generated method stub	
+		propulsion.run(true);
+		while(propulsion.isRunning()){
+			if(pression.isPressed()){
+				propulsion.stopMoving();
+				graber.close();
+			}
+		}
+		propulsion.run(false);
+		while(propulsion.isRunning()){
+			propulsion.checkState();
+			if(input.escapePressed())
+				return;
+			if(color.getCurrentColor() == Color.WHITE){
+				propulsion.stopMoving();
+			}
+		}
 	}
 
 	private void calibrate() {
@@ -151,7 +167,7 @@ public class Controler {
 		File file = new File("calibration");
 		if(file.exists()){
 			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
-			//color.setCalibration((float[][])ois.readObject());
+			color.setCalibration((float[][])ois.readObject());
 			graber.setOpenTime((long)ois.readObject());
 			ois.close();
 			return true;
@@ -176,7 +192,7 @@ public class Controler {
 				file.createNewFile();
 			}
 			ObjectOutputStream str = new ObjectOutputStream(new FileOutputStream(file));
-			//str.writeObject(color.getCalibration());
+			str.writeObject(color.getCalibration());
 			str.writeObject(graber.getOpenTime());
 			str.flush();
 			str.close();
