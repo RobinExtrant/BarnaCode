@@ -8,7 +8,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import lejos.hardware.Button;
-import lejos.robotics.Calibrate;
 import lejos.robotics.Color;
 import motors.Graber;
 import motors.Propulsion;
@@ -17,6 +16,7 @@ import sensors.PressionSensor;
 import sensors.VisionSensor;
 import ui.InputHandler;
 import ui.Screen;
+import utils.BarnaConstants;
 
 public class Controler {
 	private Graber graber;
@@ -55,12 +55,16 @@ public class Controler {
 	}
 	
 	private void mainLoop() {
+		/*Test palet droit puis le ramener en reculant
 		propulsion.run(true);
 		while(propulsion.isRunning()){
 			if(pression.isPressed()){
 				propulsion.stopMoving();
 				graber.close();
 			}
+		}
+		while(graber.isRunning()) {
+			graber.checkState();
 		}
 		propulsion.run(false);
 		while(propulsion.isRunning()){
@@ -69,6 +73,51 @@ public class Controler {
 				return;
 			if(color.getCurrentColor() == Color.WHITE){
 				propulsion.stopMoving();
+			}
+		}*/
+		/*Test aller chercher premier palet dans sa vision de 20-70cm*/
+		propulsion.rotate(BarnaConstants.FULL_CIRCLE, false, false);
+		float newDist;
+		while(propulsion.isRunning()) {
+			newDist = vision.getRaw()[0];
+			if(newDist < BarnaConstants.MAX_VISION_RANGE
+					   && newDist >= BarnaConstants.MIN_VISION_RANGE){
+				propulsion.stopMoving();
+				propulsion.run(true);
+				while(propulsion.isRunning()){
+					if(pression.isPressed()){
+						propulsion.stopMoving();
+						graber.close();
+					}
+				}
+				double rotation = propulsion.getRotateToNorth();
+				if (rotation < 0) {
+					rotation = rotation+BarnaConstants.SOUTH;
+				} else {
+					rotation = rotation-BarnaConstants.SOUTH;
+				}
+				propulsion.rotate((float)rotation, false, false);
+				while(propulsion.isRunning() || graber.isRunning()){
+					propulsion.checkState();
+					graber.checkState();
+					if(input.escapePressed())
+						return;
+				}
+				propulsion.run(true);
+				while(propulsion.isRunning()){
+					propulsion.checkState();
+					if(input.escapePressed())
+						return;
+					if(color.getCurrentColor() == Color.WHITE){
+						propulsion.stopMoving();
+						graber.open();
+					}
+				}
+				while(graber.isRunning()) {
+					if(input.escapePressed())
+						return;
+					graber.checkState();
+				}
 			}
 		}
 	}
