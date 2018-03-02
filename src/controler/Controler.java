@@ -6,11 +6,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.function.Function;
 
 import lejos.hardware.Button;
 import lejos.robotics.Color;
-import motors.Graber;
-import motors.Propulsion;
+import motors.*;
 import sensors.ColorSensor;
 import sensors.PressionSensor;
 import sensors.VisionSensor;
@@ -26,7 +28,7 @@ public class Controler {
 	private VisionSensor vision;
 	private InputHandler input;
 	private Screen screen;
-
+	
 	public Controler() {
 		this.propulsion = new Propulsion();
 		this.graber     = new Graber();
@@ -55,6 +57,8 @@ public class Controler {
 	}
 	
 	private void mainLoop() {
+		screen.drawText("Commencer");
+		input.waitAny();
 		/*Test palet droit puis le ramener en reculant
 		propulsion.run(true);
 		while(propulsion.isRunning()){
@@ -98,27 +102,28 @@ public class Controler {
 				}
 				propulsion.rotate((float)rotation, false, false);
 				while(propulsion.isRunning() || graber.isRunning()){
-					propulsion.checkState();
-					graber.checkState();
-					if(input.escapePressed())
-						return;
+					checkMotor(new ArrayList<TimedMotor>(Arrays.asList(this.graber, this.propulsion)));
 				}
 				propulsion.run(true);
 				while(propulsion.isRunning()){
-					propulsion.checkState();
-					if(input.escapePressed())
-						return;
+					checkMotor(new ArrayList<TimedMotor>(Arrays.asList(this.propulsion)));
 					if(color.getCurrentColor() == Color.WHITE){
 						propulsion.stopMoving();
 						graber.open();
 					}
 				}
 				while(graber.isRunning()) {
-					if(input.escapePressed())
-						return;
-					graber.checkState();
+					checkMotor(new ArrayList<TimedMotor>(Arrays.asList(this.graber)));
 				}
 			}
+		}
+	}
+	
+	private void checkMotor(ArrayList<TimedMotor> toCheck) {
+		if(input.escapePressed())
+			return;
+		for (TimedMotor motor : toCheck) {
+			motor.checkState();
 		}
 	}
 
@@ -138,17 +143,17 @@ public class Controler {
 			graber.startCalibrate(false);
 			input.waitAny();
 			graber.stopCalibrate(false);
-			screen.drawText("Calibration", 
-						"Appuyer sur Entree", "pour commencer la",
-						"calibration de l'ouverture", "et sur Entree quand les", "pinces sont ouvertes");
-			input.waitAny();
-			graber.startCalibrate(true);
-			input.waitAny();
-			graber.stopCalibrate(true);
 
 		} else {
 			this.graber.stopCalibrate(false);
 		}
+		screen.drawText("Calibration", 
+				"Appuyer sur Entree", "pour commencer la",
+				"calibration de l'ouverture", "et sur Entree quand les", "pinces sont ouvertes");
+		input.waitAny();
+		graber.startCalibrate(true);
+		input.waitAny();
+		graber.stopCalibrate(true);
 	}
 	
 	/**

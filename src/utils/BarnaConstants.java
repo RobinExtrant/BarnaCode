@@ -28,7 +28,7 @@ public class BarnaConstants {
 	public static final float PR_ANGLE_CORRECTION = ANGLE_CORRECTION/100f;
 	
 	//Vision
-	public static final float MAX_VISION_RANGE = 0.70f;
-	public static final float MIN_VISION_RANGE = 0.20f;
+	public static final float MAX_VISION_RANGE = 0.40f;
+	public static final float MIN_VISION_RANGE = 0.10f;
 
 }
