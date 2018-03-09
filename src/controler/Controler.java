@@ -59,7 +59,12 @@ public class Controler {
 	private void mainLoop() {
 		screen.drawText("Commencer");
 		input.waitAny();
-		/*Test palet droit puis le ramener en reculant
+		//base_test();
+		spin_test();
+	}
+	
+	private void forward_test() {
+		/*Test palet droit puis le ramener en reculant*/
 		propulsion.run(true);
 		while(propulsion.isRunning()){
 			if(pression.isPressed()){
@@ -78,7 +83,10 @@ public class Controler {
 			if(color.getCurrentColor() == Color.WHITE){
 				propulsion.stopMoving();
 			}
-		}*/
+		}
+	}
+	
+	private void spin_test() {
 		/*Test aller chercher premier palet dans sa vision de 20-70cm*/
 		propulsion.rotate(BarnaConstants.FULL_CIRCLE, false, false);
 		float newDist;
