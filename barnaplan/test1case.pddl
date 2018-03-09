@@ -1,0 +1,6 @@
+(define (problem BARNABOB)
+(:domain BARNA)
+(:objects C1 - case S N - but P1 - palet)
+(:INIT (BUSY C1 P1) (HANDEMPTY) (ONBUT S))
+(:goal (BUSYBUT S P1))
+)
