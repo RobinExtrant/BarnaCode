@@ -13,10 +13,12 @@ public class pddlLoader {
 	private ProblemFactory pf;
 	private HSP hsp;
 	private SequentialPlan sp;
+	private CodedProblem cp;
 	
 	public pddlLoader() {
 		this.pf = new ProblemFactory();
 		this.hsp = new HSP();
+		this.hsp.setSaveState(false);
 	}
 	
 	public void generatePlan(File domain, File problem) {
@@ -25,14 +27,11 @@ public class pddlLoader {
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		}
-		CodedProblem cp = pf.encode();
+		this.cp = pf.encode();
 		this.sp = hsp.search(cp);
 	}
 	
 	public void display() {
-		List<BitOp> l = sp.actions();
-		for (int i = 0; i < l.size(); i++) {
-			l.get(i).toString();
-		}
+		System.out.println(cp.toString(sp));
 	}
 }
