@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 
 import lejos.hardware.Button;
@@ -19,6 +20,8 @@ import sensors.VisionSensor;
 import ui.InputHandler;
 import ui.Screen;
 import utils.BarnaConstants;
+import pddl.Item;
+import pddl.ServerListener;
 
 public class Controler {
 	private Graber graber;
@@ -28,6 +31,7 @@ public class Controler {
 	private VisionSensor vision;
 	private InputHandler input;
 	private Screen screen;
+	//private ArrayList<Item> listItem;
 	
 	public Controler() {
 		this.propulsion = new Propulsion();
@@ -37,6 +41,7 @@ public class Controler {
 		this.vision     = new VisionSensor();
 		this.screen     = new Screen();
 		this.input      = new InputHandler(screen);
+		//this.listItem = new ArrayList<Item>();
 	}
 	
 	public void start() throws FileNotFoundException, ClassNotFoundException, IOException {
@@ -260,4 +265,16 @@ public class Controler {
 			str.close();
 		}
 	}
+
+	/*@Override
+	public void receiveRawPoints(List<Item> lastPointsReceived) {
+		this.listItem.addAll(lastPointsReceived);
+	}
+
+	@Override
+	public void displayList() {
+		for (int i = 0; i < listItem.size(); i++) {
+			System.out.println("Palet " + i + " : x = " + listItem.get(i).getX() + " y = " + listItem.get(i).getY());
+		}
+	}*/
 }

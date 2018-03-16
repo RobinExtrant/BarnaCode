@@ -2,7 +2,9 @@ package mains;
 
 import java.io.File;
 
+import pddl.Server;
 import pddl.pddlLoader;
+import pddl.testServer;
 
 public class testPddl {
 	public static void main(String[] args) {
@@ -10,6 +12,10 @@ public class testPddl {
 		File problem = new File("/home/vincent/BarnaCode/barnaplan/test9case.pddl");
 		pddlLoader pddl = new pddlLoader();
 		pddl.generatePlan(domain, problem);
-		pddl.display();
+		//pddl.display();
+		testServer ts = new testServer();
+		Server s = new Server(ts);
+		s.start();
+		ts.displayList();
 	}
 }

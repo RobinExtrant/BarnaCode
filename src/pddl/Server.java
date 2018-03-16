@@ -30,6 +30,7 @@ public class Server extends Thread{
 			e1.printStackTrace();
 		}
 		
+		System.out.println("[SERVER]                : Initialized");
 	}
 	
 	public static void defineOffset(int x, int y){
@@ -39,6 +40,7 @@ public class Server extends Thread{
 	
 	@Override
 	public void run() {
+		System.out.println("[SERVER]                : Started");
 		this.setPriority(Thread.NORM_PRIORITY);
 		while(! isInterrupted() && !this.stop){
 			try {
@@ -61,6 +63,7 @@ public class Server extends Thread{
 			this.sl.receiveRawPoints(this.lastPointsReceived);
 			this.packet.setLength(this.buffer.length);
 		}
+		System.out.println("[SERVER]                : Finished");
 	}
 	
 	@Override
