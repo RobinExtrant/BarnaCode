@@ -13,12 +13,13 @@ public class testServer implements ServerListener {
 	@Override
 	public void receiveRawPoints(List<Item> lastPointsReceived) {
 		this.listItem.addAll(lastPointsReceived);
+		displayList();
 	}
 
 	@Override
 	public void displayList() {
 		for (int i = 0; i < listItem.size(); i++) {
-			System.out.println("Palet " + i + " : x = " + listItem.get(i).getX() + " y = " + listItem.get(i).getY());
+			System.out.println("Palet " + i + " " + listItem.get(i).toString());
 		}
 	}
 

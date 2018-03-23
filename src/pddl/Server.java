@@ -42,12 +42,13 @@ public class Server extends Thread{
 	public void run() {
 		System.out.println("[SERVER]                : Started");
 		this.setPriority(Thread.NORM_PRIORITY);
-		while(! isInterrupted() && !this.stop){
+		while(! isInterrupted() && !this.stop) {
 			try {
 				this.dsocket.receive(this.packet);
 			} catch (IOException e) {
 				this.stop = true;
 			}
+
 			String msg = new String(this.buffer, 0, this.packet.getLength());
 			String[] items = msg.split("\n");
 			this.lastPointsReceived.clear();
@@ -57,7 +58,9 @@ public class Server extends Thread{
 				if(coord.length == 3){
 		        	int x = Integer.parseInt(coord[1]);
 		        	int y = 300 - Integer.parseInt(coord[2]);
-		        	this.lastPointsReceived.add(new Item((x*10) + xOffset, (y*10) + yOffset));		        	
+		        	Item item = new Item((x*10) + xOffset, (y*10) + yOffset);
+		        	this.lastPointsReceived.add(item);
+		        	System.out.println("[SERVER]                : " + item.toString());
 				}
 	        }
 			this.sl.receiveRawPoints(this.lastPointsReceived);

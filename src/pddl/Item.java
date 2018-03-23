@@ -11,7 +11,7 @@ public class Item {
 
 	@Override
 	public String toString(){
-		return "Item = [" + this.x +"," + this.y + "]";
+		return "[" + this.x +"," + this.y + "]";
 	}
 	
 	public void update(final int x, final int y){
