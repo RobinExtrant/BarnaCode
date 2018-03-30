@@ -2,6 +2,7 @@ package mains;
 
 import java.io.File;
 
+import fr.uga.pddl4j.util.SequentialPlan;
 import pddl.Server;
 import pddl.pddlLoader;
 import pddl.testServer;
@@ -12,9 +13,13 @@ public class testPddl {
 		File problem = new File("/home/vincent/BarnaCode/barnaplan/test9case.pddl");
 		pddlLoader pddl = new pddlLoader();
 		pddl.generatePlan(domain, problem);
+		SequentialPlan sp = pddl.getPlan();
 		pddl.display();
-		testServer ts = new testServer();
+		System.out.println(sp.actions().get(29).getName());
+		System.out.println(sp.actions().get(29).getValueOfParameter(0));
+		System.out.println(sp.actions().get(29).getValueOfParameter(1));
+		/*testServer ts = new testServer();
 		Server s = new Server(ts);
-		s.start();
+		s.start();*/
 	}
 }
