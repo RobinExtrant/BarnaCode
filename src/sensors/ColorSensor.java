@@ -11,11 +11,13 @@ public class ColorSensor {
 	private float[][] colors;
 	private Port port;
 	private EV3ColorSensor colorSensor;
+	private int lastColor;
 
 	public ColorSensor(){
 		port        = LocalEV3.get().getPort(BarnaConstants.COLOR_SENSOR);
 		colorSensor = new EV3ColorSensor(port);
 		colors      = new float[16][0];
+		lastColor = Color.GRAY;
 	}
 	
 	/**
@@ -69,6 +71,14 @@ public class ColorSensor {
 			}
 		}
 		return color;
+	}
+	
+	public int getLastColor(){
+		return this.lastColor;
+	}
+	
+	public void setLastColor(int color) {
+		this.lastColor = color;
 	}
 	
 	/**

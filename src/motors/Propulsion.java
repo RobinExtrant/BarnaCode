@@ -40,6 +40,7 @@ public class Propulsion extends TimedMotor implements MoveListener{
 		chassis   = new WheeledChassis(new Wheel[]{left, right},  WheeledChassis.TYPE_DIFFERENTIAL);
 		pilot     = new MovePilot(chassis);
 		pilot.addMoveListener(this);
+		pilot.setLinearSpeed(BarnaConstants.LINEAR_SPEED);
 		pilot.setLinearAcceleration(BarnaConstants.LINEAR_ACCELERATION);
 		pilot.setAngularSpeed(BarnaConstants.MAX_ROTATION_SPEED);
 	}
