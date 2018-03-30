@@ -9,8 +9,8 @@ import pddl.testServer;
 
 public class testPddl {
 	public static void main(String[] args) {
-		File domain = new File("/home/vincent/BarnaCode/barnaplan/domain.pddl");
-		File problem = new File("/home/vincent/BarnaCode/barnaplan/test9case.pddl");
+		File domain = new File("barnaplan/domain.pddl");
+		File problem = new File("barnaplan/test9case.pddl");
 		pddlLoader pddl = new pddlLoader();
 		pddl.generatePlan(domain, problem);
 		SequentialPlan sp = pddl.getPlan();

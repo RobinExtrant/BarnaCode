@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
+import fr.uga.pddl4j.util.BitOp;
+import fr.uga.pddl4j.util.SequentialPlan;
 import lejos.hardware.Button;
 import lejos.robotics.Color;
 import motors.*;
@@ -22,6 +24,7 @@ import ui.Screen;
 import utils.BarnaConstants;
 import pddl.Item;
 import pddl.ServerListener;
+import pddl.pddlLoader;
 
 public class Controler {
 	private Graber graber;
@@ -84,8 +87,25 @@ public class Controler {
 		input.waitAny();
 		//base_test();
 		//spin_test();
+		
+		
+		/*File domain = new File("barnaplan/domain.pddl");
+		File problem = new File("barnaplan/test9case.pddl");
+		pddlLoader pddl = new pddlLoader();
+		pddl.generatePlan(domain, problem);
+		SequentialPlan sp = pddl.getPlan();
+		for (BitOp action : sp.actions()) {
+			if (action.getName().equals("moveoutbut")) {
+				int indexIntersection = action.getValueOfParameter(1);
+				goToIntersection(indexIntersection);
+			}
+		}*/
+		for (int index = 0; index <9; index++) {
+			goToIntersection(index);
+		}
+		/*
 		goToIntersection(1);
-		goToIntersection(7);
+		goToIntersection(7);*/
 	}
 	/*
 	private Intersection getIntersectionWithLetter(String letter) {
