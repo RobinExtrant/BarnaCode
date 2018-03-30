@@ -33,6 +33,7 @@ public class Controler {
 	private Screen screen;
 	private boolean westBlack;
 	private int initOrientation;
+	private ArrayList<Intersection> intersections;
 	
 	public enum RelativeOrientation {WEST, MIDDLE, EAST}
 	//private ArrayList<Item> listItem;
@@ -46,6 +47,15 @@ public class Controler {
 		this.screen     = new Screen();
 		this.input      = new InputHandler(screen);
 		this.initOrientation = BarnaConstants.NORTH;
+		this.intersections = new ArrayList<Intersection>(Arrays.asList(new Intersection("A", Color.GREEN, RelativeOrientation.WEST),
+																	new Intersection("B", Color.GREEN, RelativeOrientation.MIDDLE),
+																	new Intersection("C", Color.GREEN, RelativeOrientation.EAST),
+																	new Intersection("D", Color.BLACK, RelativeOrientation.WEST),
+																	new Intersection("E", Color.BLACK, RelativeOrientation.MIDDLE),
+																	new Intersection("F", Color.BLACK, RelativeOrientation.EAST),
+																	new Intersection("G", Color.BLUE, RelativeOrientation.WEST),
+																	new Intersection("H", Color.BLUE, RelativeOrientation.MIDDLE),
+																	new Intersection("I", Color.BLUE, RelativeOrientation.EAST)));
 		//this.listItem = new ArrayList<Item>();
 	}
 	
@@ -75,46 +85,37 @@ public class Controler {
 		//base_test();
 		//spin_test();
 		goToIntersection(1);
-		propulsion.runFor(300, false);
-		while(propulsion.isRunning()){
-			checkMotor(new ArrayList<TimedMotor>(Arrays.asList(this.propulsion)));
-		}
-		propulsion.orientateSouth(true);
-		goToIntersection(2);
-		/*while (true) {
-			propulsion.run(true);
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-				
-			//screen.drawText("Bleu : " + Color.BLUE, "Noir : " + Color.BLACK, "Vert : " + Color.GREEN);
-			screen.drawText("Bleu : " + Color.BLUE, "Noir : " + Color.BLACK, "Vert : " + Color.GREEN," color : " + String.valueOf(color.getCurrentColor()));
-		}*/
+		goToIntersection(7);
 	}
+	/*
+	private Intersection getIntersectionWithLetter(String letter) {
+		for (Intersection intersection : this.intersections) {
+			if (intersection.getLetter().equals(letter)) {
+				return intersection;
+			}
+		}
+		return null;
+	}*/
 	
 	private void goToIntersection(int choix) {
-		int lineColor;
-		RelativeOrientation relativeOrientation;
-		
+		Intersection intersection = this.intersections.get(choix);
+		int lineColor = intersection.getColor();
+		RelativeOrientation relativeOrientation = intersection.getRelativeOrientation();
+		/*
 		if (choix == 1) {
 			lineColor = Color.GREEN;
 			relativeOrientation = RelativeOrientation.MIDDLE;
 		} else {
 			lineColor = Color.BLUE;
 			relativeOrientation = RelativeOrientation.MIDDLE;
-		}
-		/*int lineColor = Color.GREEN;
-		RelativeOrientation relativeOrientation = RelativeOrientation.WEST;*/
+		}*/
 		
 		propulsion.run(true);
 		while(propulsion.isRunning()){
 			checkMotor(new ArrayList<TimedMotor>(Arrays.asList(this.propulsion)));
 			if(color.getCurrentColor() == lineColor){
 				try {
-					Thread.sleep(100);
+					Thread.sleep(150);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -167,6 +168,21 @@ public class Controler {
 			break;
 		default:
 			orientation = BarnaConstants.WEST;
+		}
+	}
+	
+	private void color_test() {
+		while (true) {
+			propulsion.run(true);
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+				
+			//screen.drawText("Bleu : " + Color.BLUE, "Noir : " + Color.BLACK, "Vert : " + Color.GREEN);
+			screen.drawText("Bleu : " + Color.BLUE, "Noir : " + Color.BLACK, "Vert : " + Color.GREEN," color : " + String.valueOf(color.getCurrentColor()));
 		}
 	}
 	
@@ -290,11 +306,17 @@ public class Controler {
 		while(graber.isRunning()) {
 			checkMotor(new ArrayList<TimedMotor>(Arrays.asList(this.graber)));
 		}
+		
+		propulsion.runFor(300, false);
+		while(propulsion.isRunning()){
+			checkMotor(new ArrayList<TimedMotor>(Arrays.asList(this.propulsion)));
+		}
+		propulsion.orientateSouth(true);
 	}
 
 	private void checkMotor(ArrayList<TimedMotor> toCheck) {
 		if(input.escapePressed())
-			return;
+			System.exit(0);
 		for (TimedMotor motor : toCheck) {
 			motor.checkState();
 		}
