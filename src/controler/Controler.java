@@ -40,8 +40,10 @@ public class Controler {
 	
 	public enum RelativeOrientation {WEST, MIDDLE, EAST}
 	//private ArrayList<Item> listItem;
+	private int counterColor;
 	
 	public Controler() {
+		this.counterColor = 0;
 		this.propulsion = new Propulsion();
 		this.graber     = new Graber();
 		this.color      = new ColorSensor();
@@ -100,9 +102,19 @@ public class Controler {
 				goToIntersection(indexIntersection);
 			}
 		}*/
-		for (int index = 0; index <9; index++) {
+		/*for (int index = 0; index <9; index++) {
 			goToIntersection(index);
-		}
+		}*/
+		goToIntersection(0);
+		goToIntersection(1);
+		goToIntersection(2);
+		goToIntersection(5);
+		goToIntersection(4);
+		goToIntersection(3);
+		goToIntersection(7);
+		goToIntersection(6);
+		goToIntersection(8);
+		//color_test();
 		/*
 		goToIntersection(1);
 		goToIntersection(7);*/
@@ -121,28 +133,31 @@ public class Controler {
 		Intersection intersection = this.intersections.get(choix);
 		int lineColor = intersection.getColor();
 		RelativeOrientation relativeOrientation = intersection.getRelativeOrientation();
-		/*
-		if (choix == 1) {
-			lineColor = Color.GREEN;
-			relativeOrientation = RelativeOrientation.MIDDLE;
-		} else {
-			lineColor = Color.BLUE;
-			relativeOrientation = RelativeOrientation.MIDDLE;
-		}*/
 		
+		/*Tant qu'on ne croise pas la ligne de couleur sur laquelle se trouve le palet
+		On continue d'avancer*/
 		propulsion.run(true);
 		while(propulsion.isRunning()){
 			checkMotor(new ArrayList<TimedMotor>(Arrays.asList(this.propulsion)));
-			if(color.getCurrentColor() == lineColor){
+			int colorCapted = color.getCurrentColor();
+			if(colorCapted == lineColor){
 				try {
-					Thread.sleep(150);
+					Thread.sleep(40);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				this.counterColor ++;
+			}else {
+				this.counterColor = 0;
+			}
+			if(this.counterColor >= 2) {
+				this.counterColor = 0;
 				propulsion.stopMoving();
 			}
 		}
 		
+		/*Selon la direction cardinale où se trouve le palet sur cette ligne, on récupère la bonne
+		orientation*/
 		int orientation;
 		switch (relativeOrientation) {
 			case WEST:
@@ -158,29 +173,38 @@ public class Controler {
 			default:
 				orientation = BarnaConstants.WEST;
 		}
+		//IF NOT FIRST INTERSECTION, WE INVERSE ORIENTATION
+		if (choix != 0) {
+			orientation = -orientation;
+		}
 		
+		/* Rotation de l'angle voulu */
 		propulsion.rotate((float)orientation, false, false);
 		while(propulsion.isRunning()){
 			checkMotor(new ArrayList<TimedMotor>(Arrays.asList(this.propulsion)));
 		}
 		
+		/* On avance jusqu'au palet */
 		propulsion.run(true);
 		while(propulsion.isRunning()){
 			if(pression.isPressed()){
 				propulsion.stopMoving();
 				graber.close();
-				//Si on est au milieu, on met à jour westBlack car nous allons passé
-				//de l'autre côté en allant dans le camps adverse
 			}
 		}
 		
 		goEnemyCamp();
 		
+		/* Selon de quel côté on est allé chercher le palet, on met à jour l'information
+		 * Si l'on se trouve à l'ouest ou à l'est de la ligne noire verticale
+		 */
 		switch (relativeOrientation) {
 		case WEST:
 			westBlack = true;
 			break;
 		case MIDDLE:
+			/* Si on est au milieu, alors avec notre technique de décalage pour éviter les palets
+			alors, on se retrouve du côté inverse */
 			westBlack = !westBlack;		
 			break;
 		case EAST:		
@@ -193,7 +217,8 @@ public class Controler {
 	
 	private void color_test() {
 		while (true) {
-			propulsion.run(true);
+			if(input.escapePressed())
+				System.exit(0);
 			try {
 				Thread.sleep(50);
 			} catch (InterruptedException e) {
@@ -269,44 +294,18 @@ public class Controler {
 	
 	private void goEnemyCamp() {
 		double rotation = propulsion.getRotateToNorth();
-		/*if (rotation < 0) {
-			rotation = rotation+BarnaConstants.SOUTH;
-		} else {
-			rotation = rotation-BarnaConstants.SOUTH;
-		}*/
-		
-		/*propulsion.rotate((float)rotation, false, false);
-		while(propulsion.isRunning() || graber.isRunning()){
-			checkMotor(new ArrayList<TimedMotor>(Arrays.asList(this.graber, this.propulsion)));
-		}*/
 		
 		int angleToShift;
 		if (westBlack) angleToShift = 45;
 		else angleToShift = -45;
 		
 		rotation = rotation + angleToShift;
-		/*
-		propulsion.rotate(45, false, false);
-		while(propulsion.isRunning()){
-			checkLeftRightBlack();
-			checkMotor(new ArrayList<TimedMotor>(Arrays.asList(this.propulsion)));
-		}
-		propulsion.runFor(1200, true);
-		while(propulsion.isRunning()){
-			checkLeftRightBlack();
-			checkMotor(new ArrayList<TimedMotor>(Arrays.asList(this.propulsion)));
-		}
-		propulsion.rotate(45, true, false);
-		while(propulsion.isRunning()){
-			checkLeftRightBlack();
-			checkMotor(new ArrayList<TimedMotor>(Arrays.asList(this.propulsion)));
-		}*/
 		
 		propulsion.rotate((float)rotation, false, false);
 		while(propulsion.isRunning() || graber.isRunning()){
 			checkMotor(new ArrayList<TimedMotor>(Arrays.asList(this.graber, this.propulsion)));
 		}
-		propulsion.runFor(1200, true);
+		propulsion.runFor(800, true);
 		while(propulsion.isRunning()){
 			checkMotor(new ArrayList<TimedMotor>(Arrays.asList(this.propulsion)));
 		}
