@@ -22,9 +22,10 @@ public class BarnaConstants {
 	public static final int SOUTH = HALF_CIRCLE;
 	public static final float WHEEL_DIAMETER = 56;
 	public static final float DISTANCE_TO_CENTER = 62.525f;
-	public static final float LINEAR_ACCELERATION = 0.2f;
-	public static final float LINEAR_SPEED = 528f;
-	public static final int MAX_ROTATION_SPEED = 70;
+	public static final float LINEAR_ACCELERATION = 0.1f;
+	public static final float ANGULAR_ACCELERATION = 0.1f;
+	public static final float LINEAR_SPEED = 350f;
+	public static final int MAX_ROTATION_SPEED = 50;
 	public static final int   ANGLE_CORRECTION = 2;
 	public static final int PADDING_CHECK_ORIENTATION = 65;
 	public static final float PR_ANGLE_CORRECTION = ANGLE_CORRECTION/100f;
