@@ -87,9 +87,6 @@ public class Controler {
 		this.westBlack = input.waitButton(Button.ID_ESCAPE);
 		screen.drawText("Commencer");
 		input.waitAny();
-		//base_test();
-		//spin_test();
-		
 		
 		/*File domain = new File("barnaplan/domain.pddl");
 		File problem = new File("barnaplan/test9case.pddl");
@@ -115,19 +112,7 @@ public class Controler {
 		goToIntersection(6);
 		goToIntersection(8);
 		//color_test();
-		/*
-		goToIntersection(1);
-		goToIntersection(7);*/
 	}
-	/*
-	private Intersection getIntersectionWithLetter(String letter) {
-		for (Intersection intersection : this.intersections) {
-			if (intersection.getLetter().equals(letter)) {
-				return intersection;
-			}
-		}
-		return null;
-	}*/
 	
 	private void goToIntersection(int choix) {
 		Intersection intersection = this.intersections.get(choix);
@@ -183,17 +168,35 @@ public class Controler {
 		while(propulsion.isRunning()){
 			checkMotor(new ArrayList<TimedMotor>(Arrays.asList(this.propulsion)));
 		}
-		
+		boolean withGraberClosed = false;
 		/* On avance jusqu'au palet */
 		propulsion.run(true);
 		while(propulsion.isRunning()){
 			if(pression.isPressed()){
 				propulsion.stopMoving();
 				graber.close();
+				withGraberClosed = true;
+			}
+			
+			int colorCapted = color.getCurrentColor();
+			if(colorCapted == Color.RED || colorCapted == Color.YELLOW){
+				try {
+					Thread.sleep(40);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				this.counterColor ++;
+			}else {
+				this.counterColor = 0;
+			}
+			if(this.counterColor >= 2) {
+				this.counterColor = 0;
+				propulsion.stopMoving();
+				withGraberClosed = false;
 			}
 		}
 		
-		goEnemyCamp();
+		goEnemyCamp(withGraberClosed);
 		
 		/* Selon de quel côté on est allé chercher le palet, on met à jour l'information
 		 * Si l'on se trouve à l'ouest ou à l'est de la ligne noire verticale
@@ -231,30 +234,7 @@ public class Controler {
 		}
 	}
 	
- 	private void forward_test() {
-		/*Test palet droit puis le ramener en reculant*/
-		propulsion.run(true);
-		while(propulsion.isRunning()){
-			if(pression.isPressed()){
-				propulsion.stopMoving();
-				graber.close();
-			}
-		}
-		while(graber.isRunning()) {
-			graber.checkState();
-		}
-		propulsion.run(false);
-		while(propulsion.isRunning()){
-			propulsion.checkState();
-			if(input.escapePressed())
-				return;
-			if(color.getCurrentColor() == Color.WHITE){
-				propulsion.stopMoving();
-			}
-		}
-	}
-	
-	private void spin_test() {
+	private void spin_and_search() {
 		/*Test aller chercher premier palet dans sa vision de 20-70cm*/
 		propulsion.rotate(BarnaConstants.FULL_CIRCLE, false, false);
 		float newDist;
@@ -271,7 +251,7 @@ public class Controler {
 						graber.close();
 					}
 				}
-				goEnemyCamp();
+				goEnemyCamp(true);
 			}
 		}
 	}
@@ -292,7 +272,7 @@ public class Controler {
 		color.setLastColor(currentColor);
 	}
 	
-	private void goEnemyCamp() {
+	private void goEnemyCamp(boolean withGraberClosed) {
 		double rotation = propulsion.getRotateToNorth();
 		
 		int angleToShift;
@@ -319,7 +299,10 @@ public class Controler {
 			checkMotor(new ArrayList<TimedMotor>(Arrays.asList(this.propulsion)));
 			if(color.getCurrentColor() == Color.WHITE){
 				propulsion.stopMoving();
-				graber.open();
+				if (withGraberClosed)
+				{
+					graber.open();
+				}
 			}
 		}
 		while(graber.isRunning()) {

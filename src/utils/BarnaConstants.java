@@ -25,7 +25,7 @@ public class BarnaConstants {
 	public static final float LINEAR_ACCELERATION = 0.1f;
 	public static final float ANGULAR_ACCELERATION = 0.1f;
 	public static final float LINEAR_SPEED = 350f;
-	public static final int MAX_ROTATION_SPEED = 50;
+	public static final int MAX_ROTATION_SPEED = 40;
 	public static final int   ANGLE_CORRECTION = 2;
 	public static final int PADDING_CHECK_ORIENTATION = 65;
 	public static final float PR_ANGLE_CORRECTION = ANGLE_CORRECTION/100f;
